@@ -9,6 +9,7 @@ function [trind_mat tr_mat tt_mat rescind dirind] = fct_get_return1Traj1D_v2(tgr
 
 % define the output
 trind_mat = zeros(length(texit_ind),NrMax);
+
 for k=1:length(texit_ind)
     ts_indk  = texit_ind(k);
     rk       = R(ts_indk)'+v0z_sample(k).*(tgrid-tgrid(ts_indk))+r0z_sample(k);

@@ -14,13 +14,13 @@ for ii=anfang:ende
     b = b + hist_vyvz_dir_loop_01;
 cd('..')
 end
-hist_vyvz_resc_loop_01=a;
+hist_vyvz_resc_loop_01 = a;
 hist_vyvz_dir_loop_01 = b;
 
     save('sodium.mat');
     
     %% single plot
-atom = 'sodium.mat';
+atom = '1800nm_Xe_8.7fs_2_25_ceps_CEP.mat';
 % these parameters are just for fun...
 c0       = 299792458./(2.1876912633e6);        % au, speed of light 
 wvlm     = 1800e-9;                            % 
@@ -54,7 +54,7 @@ view(2)
 %  xlim([-lim_correction*y_lim,lim_correction*y_lim]);
     caxis([-7,0])
 
- set(gca,'fontsize',16)
+set(gca,'fontsize',16)
 xlhand = get(gca,'xlabel');
 set(xlhand,'string','P_x','fontsize',16) ;
 ylhand = get(gca,'ylabel');

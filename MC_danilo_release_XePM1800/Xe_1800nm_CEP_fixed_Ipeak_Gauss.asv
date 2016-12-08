@@ -1,0 +1,57 @@
+% close all
+clear all
+
+%%  Pulse parameters
+type            = 'gauss'           %   'gauss'    and    'sin2'
+I0              = 0.8e14;           % I0 .... peak intensity of pulse
+IWcm            = I0;               % w/cm2   
+wvlnm           = 1800;             % unit nm .. center wavelength
+wvlm            = wvlnm*1e-9;          % unit m .. center wavelength
+fwhm_nochirp    = 8.7;              % FWHM of FTL
+n_c             = 6;                % only for sin2 field, numbers of cycles  
+n               = 3;                % not used
+N               = 0;                % old code not used
+PlotOpt         = 1;
+CEP             = 0;
+dt              = 0.01;
+%% Calculation parameters
+kmax            = 2;              % kmax ..... over how many intensities do you want to average ?
+nsample         = 1e7;              % nsample ..... how many electrons do you want to simulate for EACH int.?
+int_spacing     = 100;              % int_spacing ... how many intensities do you want to have in the linspace?
+
+
+%% Cross section para meters
+atom                = 'Xe';
+cutoff_winkel       = 20;             % cutoff_winkel ... the angle until which you want to set the cross section constant in DEGREE (used to take care of the divergent forward-scattering)
+cross_section_fname = 'xe_cs.mat';
+
+%% define the field -
+start_at_0      = 0;                 % Gauss field start point. normally is 0
+kdoubleprime    = 0;                 % chirp
+z               = 0;                 % propagation distance, no chirp with z = 0
+cutoff          = 0.00000001;
+
+[ tgrid, A, E_real, Env, pulselength ] = fct_master_fields_shared( PlotOpt, type, start_at_0, ...
+                                       wvlnm, IWcm, CEP, dt, cutoff, z, kdoubleprime, fwhm_nochirp, n_c );
+
+
+%% Return time tables
+save_tables = 1;            % save_tables ... 1 switch on to save tables, 0 tables exists.
+
+%% Main CEP function
+nr_ceps = 25; 
+
+CEP_vec = linspace(0, 2*pi, nr_ceps);
+
+for j = 1:nr_ceps
+    CEP = CEP_vec(j);
+    
+    table_name = strcat(num2str(j),'_',num2str(nr_ceps),'ceps_','Table.mat'); 
+    savename2  = strcat(num2str(j),'_',num2str(nr_ceps),'ceps_','CEP.mat'); 
+           
+    fct_Xe1800nm_PM_withdir_savetables_Gauss( n, N, CEP, nr_ceps, kmax, nsample, I0, int_spacing, savename2,...
+                                           cross_section_fname,cutoff_winkel, save_tables, table_name, ...
+                                           type, start_at_0, wvlnm, cutoff, z, kdoubleprime, fwhm_nochirp, n_c);
+end
+
+

@@ -24,7 +24,7 @@ function   fct_Xe1800nm_PM_withdir_savetables( n, N, CEP, kmax, nsample, I0, int
 %
 % The function has no direct output. Instead it saves the 2D PEMD histogram and its axes in savename2
 
-%by Max Möller and Danilo Zille
+% by Max Möller and Danilo Zille
 
     
 % pulse characteristics
@@ -47,7 +47,7 @@ PlotOpt              =0;
 
 % ion yield in igrid from intensity distribution
 IonYield = zeros(1,length(hist_Isample_Vavg));
-for l=1:1:NI_Vavg
+for l=1:1:NI_Vavg-1
     [Yield]  = fct_get_IonYield(atom,Iaxis_Vavg(l),0,pulse);        % CEP = 0 ist a good estimate
     IonYield(l) = Yield;  
 end
@@ -65,9 +65,9 @@ hist_Isample= hist(Isample,Iaxis_Vavg);
 % prepare name1 for this run
 savestr =  ['n',num2str(n),'_N',num2str(N),'_',atom,'_',num2str(wvlm./1e-9),'_Ip',num2str(I0,'%10.1e\n')];
 
-resol = 0.01; %0.002 ist ok, aber ehr zu fein, 0.0857 == 0.1eV
+resol = 0.02; %0.002 ist ok, aber ehr zu fein, 0.0857 == 0.1eV
 
-Up       = (0.09337.*I0.*(wvlm.^2))./27.211;   % au
+Up       = (0.09337.*I0.*(wvlm.^2))./27.211;   % aumu
 % set up the size of the histogram
 y_lim = sqrt(2*10*Up);
 x_lim = sqrt(2*3.2*Up);
@@ -82,20 +82,29 @@ hist_vyvz_dir_loop_01 = zeros(length(vpegrid_01),length(vpagrid_01));
 
 for k=1:kmax % loop over intensities
     
-     tic
+    tic
     Pnorm          = Y_Vavg_Iyield;
     intens_ind     = fct_gen_distr(Pnorm,1,1);
-    Isample(k)     = Iaxis_Vavg(intens_ind);
-    CEPsample   = CEP;
+
+    
+    if intens_ind < max(intens_ind)
+        Isample(k)  = Iaxis_Vavg(intens_ind) + rand(1,1).*( Iaxis_Vavg(100) - Iaxis_Vavg(99) );
+    else
+        Isample(k)  = Iaxis_Vavg(intens_ind);
+    end
+    
+%     xsample = Vpagrid(ind)+rand(1,nsample).*(vpegrid(2)-vpegrid(1))/2;
+%     ysample = Vpegrid(ind)+rand(1,nsample).*(vpegrid(2)-vpegrid(1))/2;
+    
+    
+    CEPsample      = CEP;
     savename1      = [num2str(k),'_',savestr,'.mat'];
     
     % get the momenta for one set of CEP and intensity
     
     %nsample = 1e5;
-    [vxf_all vyf_all vzf_all vxf_dir vyf_dir vzf_dir vxf_resc vyf_resc vzf_resc T] = fct_singleICEP_v0(k, Isample(k),CEPsample,pulse,atom,nsample,savename1,dt,s,...
-                                                                                                                                                        cross_section_fname, cutoff_winkel, save_tables, table_name); 
-   
-   
+        [vxf_all vyf_all vzf_all vxf_dir vyf_dir vzf_dir vxf_resc vyf_resc vzf_resc T] = fct_singleICEP_v0(k, Isample(k),CEPsample,pulse,atom,nsample,savename1,dt,s,...
+                                                                                        cross_section_fname, cutoff_winkel, save_tables, table_name);
     % histogram for current i & cep averaged results
     PlotOpt = 0;
     [hist_vxvy_resc hist_vxvz_resc hist_vyvz_resc_01] = fct_illstr_Projections(vpagrid_01,vpegrid_01,vxf_resc,vyf_resc,vzf_resc,PlotOpt);
@@ -109,6 +118,7 @@ display(strcat('Volume intensity ',num2str(k),' done and PEMD saved!'));
 
    % %     savename2    = [num2str(k),'_all',savestr,'.mat'];
        save(savename2, 'vpagrid_01','vpegrid_01','hist_vyvz_resc_loop_01','hist_vyvz_dir_loop_01');
+    toc   
 end
 
 

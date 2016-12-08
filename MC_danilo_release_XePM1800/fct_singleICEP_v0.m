@@ -205,8 +205,8 @@ PlotOpt = 0;
 % % % % vzf_dir;
 
 %% all thogether
-vxf_dir =vxf_dir';
-vyf_dir =  vyf_dir';
+vxf_dir = vxf_dir';
+vyf_dir = vyf_dir';
 vzf_dir = vzf_dir';
 
 

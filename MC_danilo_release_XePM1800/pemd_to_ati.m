@@ -1,15 +1,14 @@
 close all
 clear all
 
-clear all
-atom = 'He1s2s-singlet.mat';
+atom = 'C:\Users\Zhang\Desktop\matlab_git\Xe-PM-1800nm-Monte-Carlo\MC_danilo_release_XePM1800\n_2_N_0_wvl_1800_I0_1.0e+14_dt_0.1_kmax_120_nsample_5e+06\1800nm_Xe_8.7fs_25_25ceps_CEP.mat';
 
 c0       = 299792458./(2.1876912633e6);        % au, speed of light 
-wvlm     = 7000e-9;                            % 
+wvlm     = 1800e-9;                            % 
 wvl      = wvlm/(5.2917720859e-11);                            % [au]
 omega    = (2*pi*c0)/wvl;                                      % [au], angular frequency
 T        = 2*pi/omega; 
-IWcm     = 5.5e11;   
+IWcm     = 1e14;   
 Up       = (0.09337.*IWcm.*wvlm.^2)./27.211;   % au     
 
 resol = 0.01; %0.002 ist ok, aber ehr zu fein, 0.0857 == 0.1eV
